@@ -75,11 +75,11 @@ const Login = () => {
 
           `Welcome ${response.data.user.name} 🎉
 
-Thanks for visiting SmartEstate.
+          Thanks for visiting SmartEstate.
 
-Find your dream property,
-connect with sellers,
-and explore premium homes!`,
+          Find your dream property,
+          connect with sellers,
+          and explore premium homes!`,
 
           {
             duration: 5000,
@@ -87,8 +87,6 @@ and explore premium homes!`,
         )
 
         navigate("/")
-
-        window.location.reload()
 
       } catch (error) {
 

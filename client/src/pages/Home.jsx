@@ -1,102 +1,18 @@
-import {
-  useEffect,
-  useState,
-} from "react"
-
-import axios from "axios"
+import properties
+from "../data/properties"
 
 import PropertyCard
 from "../components/PropertyCard"
 
-import SearchBar
-from "../components/SearchBar"
-
 const Home = () => {
-
-  const [properties,
-    setProperties] =
-      useState([])
-
-  const [search,
-    setSearch] =
-      useState("")
-
-  const [priceFilter,
-    setPriceFilter] =
-      useState("")
-
-  // FETCH PROPERTIES
-
-  useEffect(() => {
-
-    const fetchProperties =
-      async () => {
-
-        try {
-
-          const response =
-            await axios.get(
-              "https://smart-estate-production.up.railway.app/api/properties"
-            )
-
-          setProperties(
-            response.data
-          )
-
-        } catch (error) {
-
-          console.log(error)
-        }
-      }
-
-    fetchProperties()
-
-  }, [])
-
-  // FILTERED PROPERTIES
-
-  const filteredProperties =
-    properties.filter(
-      (property) => {
-
-        const matchesSearch =
-
-          property.title
-            .toLowerCase()
-            .includes(
-              search.toLowerCase()
-            )
-
-          ||
-
-          property.location
-            .toLowerCase()
-            .includes(
-              search.toLowerCase()
-            )
-
-        const matchesPrice =
-
-          priceFilter
-            ? property.price <=
-              Number(priceFilter)
-
-            : true
-
-        return (
-          matchesSearch &&
-          matchesPrice
-        )
-      }
-    )
 
   return (
 
-    <div className="bg-gray-100 min-h-screen">
+    <div>
 
-      {/* HERO */}
+      {/* HERO SECTION */}
 
-      <div className="bg-black text-white py-32 text-center">
+      <div className="bg-black text-white min-h-screen flex flex-col justify-center items-center text-center px-5">
 
         <h1 className="text-6xl font-bold mb-6">
 
@@ -104,45 +20,112 @@ const Home = () => {
 
         </h1>
 
-        <p className="text-2xl text-gray-300 mb-10">
+        <p className="text-2xl text-gray-300 mb-8">
 
           Buy, rent, and invest in premium properties across India.
 
         </p>
 
+        <button className="bg-orange-500 px-8 py-4 rounded-xl text-xl hover:bg-orange-600">
+
+          Explore Properties
+
+        </button>
+
       </div>
 
-      {/* CONTENT */}
+      {/* STATS SECTION */}
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-10 bg-white text-center">
 
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-          priceFilter={priceFilter}
-          setPriceFilter={setPriceFilter}
-        />
+        <div className="shadow-lg rounded-2xl p-6">
 
-        <h2 className="text-4xl font-bold mb-10">
+          <h1 className="text-4xl font-bold text-orange-500">
 
-          Latest Properties
+            10K+
 
-        </h2>
+          </h1>
 
-        <div className="grid md:grid-cols-3 gap-10">
+          <p className="mt-2 text-gray-600">
 
-          {
-            filteredProperties.map(
-              (property) => (
+            Properties
 
-                <PropertyCard
-                  key={property._id}
-                  property={property}
-                />
+          </p>
 
-              )
-            )
-          }
+        </div>
+
+        <div className="shadow-lg rounded-2xl p-6">
+
+          <h1 className="text-4xl font-bold text-orange-500">
+
+            5K+
+
+          </h1>
+
+          <p className="mt-2 text-gray-600">
+
+            Happy Customers
+
+          </p>
+
+        </div>
+
+        <div className="shadow-lg rounded-2xl p-6">
+
+          <h1 className="text-4xl font-bold text-orange-500">
+
+            100+
+
+          </h1>
+
+          <p className="mt-2 text-gray-600">
+
+            Cities Covered
+
+          </p>
+
+        </div>
+
+        <div className="shadow-lg rounded-2xl p-6">
+
+          <h1 className="text-4xl font-bold text-orange-500">
+
+            24/7
+
+          </h1>
+
+          <p className="mt-2 text-gray-600">
+
+            Support
+
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* PROPERTY SECTION */}
+
+      <div className="p-10 bg-gray-100">
+
+        <h1 className="text-4xl font-bold mb-10 text-center">
+
+          Featured Properties
+
+        </h1>
+
+        <div className="grid md:grid-cols-3 gap-8">
+
+          {properties.map((property) => (
+
+            <PropertyCard
+
+              key={property.id}
+
+              property={property}
+
+            />
+          ))}
 
         </div>
 
