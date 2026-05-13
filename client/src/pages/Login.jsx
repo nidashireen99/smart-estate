@@ -1,30 +1,42 @@
-import { useState } from "react"
-import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useState }
+from "react"
+
+import axios
+from "axios"
+
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom"
+
+import toast
+from "react-hot-toast"
 
 const Login = () => {
 
-  const navigate = useNavigate()
+  const navigate =
+    useNavigate()
 
-  const [isLogin, setIsLogin] =
-    useState(true)
+  const [formData,
+    setFormData] =
+      useState({
 
-  const [formData, setFormData] =
-    useState({
-      name: "",
-      email: "",
-      password: "",
-      role: "buyer",
-    })
+        email: "",
 
-  const handleChange = (e) => {
+        password: "",
+      })
 
-    setFormData({
-      ...formData,
-      [e.target.name]:
-        e.target.value,
-    })
-  }
+  const handleChange =
+    (e) => {
+
+      setFormData({
+
+        ...formData,
+
+        [e.target.name]:
+          e.target.value,
+      })
+    }
 
   const handleSubmit =
     async (e) => {
@@ -33,171 +45,123 @@ const Login = () => {
 
       try {
 
-        const url = isLogin
-          ? "https://smart-estate-production.up.railway.app/api/auth/login"
-          : "https://smart-estate-production.up.railway.app/api/auth/register"
-
         const response =
           await axios.post(
-            url,
+
+            "http://localhost:8000/api/auth/login",
+
             formData
           )
 
-        // SAVE TOKEN
-
         localStorage.setItem(
+
           "token",
+
           response.data.token
         )
 
-        // SAVE USER
-
         localStorage.setItem(
+
           "user",
+
           JSON.stringify(
             response.data.user
           )
         )
 
-        alert(
-          isLogin
-            ? "Login Successful"
-            : "Registration Successful"
+        // POPUP
+
+        toast.success(
+
+          `Welcome ${response.data.user.name} 🎉
+
+Thanks for visiting SmartEstate.
+
+Find your dream property,
+connect with sellers,
+and explore premium homes!`,
+
+          {
+            duration: 5000,
+          }
         )
 
         navigate("/")
+
+        window.location.reload()
 
       } catch (error) {
 
         console.log(error)
 
         alert(
-          error.response?.data?.message ||
-          "Something went wrong"
+          "Invalid Credentials"
         )
       }
     }
 
   return (
 
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
 
-      <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-10">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md"
+      >
 
-        <h1 className="text-4xl font-bold text-center mb-8">
+        <h1 className="text-5xl font-bold text-center mb-10">
 
-          {
-            isLogin
-              ? "Welcome Back"
-              : "Create Account"
-          }
+          Login
 
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
-
-          {
-            !isLogin && (
-
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full border p-4 rounded-xl"
-              />
-
-            )
-          }
+        <div className="flex flex-col gap-5">
 
           <input
             type="email"
             name="email"
-            placeholder="Email Address"
-            value={formData.email}
+            placeholder="Email"
             onChange={handleChange}
-            className="w-full border p-4 rounded-xl"
+            className="border p-4 rounded-xl"
+            required
           />
 
           <input
             type="password"
             name="password"
             placeholder="Password"
-            value={formData.password}
             onChange={handleChange}
-            className="w-full border p-4 rounded-xl"
+            className="border p-4 rounded-xl"
+            required
           />
-
-          {/* ROLE SELECT */}
-
-          {
-            !isLogin && (
-
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full border p-4 rounded-xl"
-              >
-
-                <option value="buyer">
-                  Buyer
-                </option>
-
-                <option value="seller">
-                  Seller
-                </option>
-
-              </select>
-
-            )
-          }
 
           <button
             type="submit"
-            className="w-full bg-orange-500 text-white py-4 rounded-xl hover:bg-orange-600 transition"
+            className="bg-orange-500 text-white py-4 rounded-xl text-lg hover:bg-orange-600"
           >
 
-            {
-              isLogin
-                ? "Login"
-                : "Register"
-            }
+            Login
 
           </button>
 
-        </form>
+        </div>
 
         <p className="text-center mt-6">
 
-          {
-            isLogin
-              ? "Don't have an account?"
-              : "Already have an account?"
-          }
+          Don't have an account?
 
-          <button
-            onClick={() =>
-              setIsLogin(!isLogin)
-            }
-            className="text-orange-500 ml-2 font-bold"
+          <Link
+            to="/register"
+            className="text-orange-500 font-bold ml-2"
           >
 
-            {
-              isLogin
-                ? "Register"
-                : "Login"
-            }
+            Register
 
-          </button>
+          </Link>
 
         </p>
 
-      </div>
+      </form>
 
     </div>
   )
