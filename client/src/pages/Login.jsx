@@ -1,3 +1,6 @@
+import toast
+from "react-hot-toast"
+
 import { useState }
 from "react"
 
@@ -9,8 +12,6 @@ import {
   useNavigate,
 } from "react-router-dom"
 
-import toast
-from "react-hot-toast"
 
 const Login = () => {
 
@@ -72,17 +73,9 @@ const Login = () => {
         // POPUP
 
         toast.success(
-
-          `Welcome ${response.data.user.name} 🎉
-
-          Thanks for visiting SmartEstate.
-
-          Find your dream property,
-          connect with sellers,
-          and explore premium homes!`,
-
+          `Welcome ${response.data.user.name} 🎉`,
           {
-            duration: 5000,
+            duration: 4000,
           }
         )
 
