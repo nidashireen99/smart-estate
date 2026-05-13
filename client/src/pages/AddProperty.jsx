@@ -1,18 +1,26 @@
 import { useState } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const AddProperty = () => {
+
+  const navigate = useNavigate()
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  )
 
   const [formData, setFormData] =
     useState({
       title: "",
       location: "",
+      exactAddress: "",
       price: "",
       image: "",
-      beds: "",
-      baths: "",
-      area: "",
       description: "",
+      sellerName: user?.name || "",
+      sellerEmail: user?.email || "",
+      sellerPhone: "",
     })
 
   const handleChange = (e) => {
@@ -25,74 +33,49 @@ const AddProperty = () => {
   }
 
   const handleSubmit =
-  async (e) => {
+    async (e) => {
 
-    e.preventDefault()
+      e.preventDefault()
 
-    try {
+      try {
 
-      const user =
-        JSON.parse(
-          localStorage.getItem("user")
+        await axios.post(
+          "http://localhost:8000/api/properties",
+          {
+            ...formData,
+            createdBy:
+              user.email,
+          }
         )
 
-      const propertyData = {
-        ...formData,
-        createdBy: user.email,
+        alert(
+          "Property Added Successfully"
+        )
+
+        navigate("/my-listings")
+
+      } catch (error) {
+
+        console.log(error)
+
+        alert("Error")
       }
-
-      await axios.post(
-        "https://smart-estate-production.up.railway.app/api/properties",
-        propertyData
-      )
-
-      alert(
-        "Property Added Successfully"
-      )
-
-    } catch (error) {
-
-      console.log(error)
-
-      alert(
-        "Error adding property"
-      )
     }
-  }
-
-  const user =
-  JSON.parse(
-    localStorage.getItem("user")
-  )
-
-if (user?.role !== "seller") {
 
   return (
 
-    <h1 className="text-4xl text-center mt-20 font-bold">
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
 
-      Only Sellers Can Add Properties
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-2xl"
+      >
 
-    </h1>
-  )
-}
-
-  return (
-
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-8">
-
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-2xl">
-
-        <h1 className="text-4xl font-bold mb-8">
-
+        <h1 className="text-4xl font-bold mb-8 text-center">
           Add Property
-
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-5"
-        >
+        <div className="grid gap-5">
 
           <input
             type="text"
@@ -100,12 +83,22 @@ if (user?.role !== "seller") {
             placeholder="Property Title"
             onChange={handleChange}
             className="border p-4 rounded-xl"
+            required
           />
 
           <input
             type="text"
             name="location"
-            placeholder="Location"
+            placeholder="City / Area"
+            onChange={handleChange}
+            className="border p-4 rounded-xl"
+            required
+          />
+
+          <input
+            type="text"
+            name="exactAddress"
+            placeholder="Exact Address"
             onChange={handleChange}
             className="border p-4 rounded-xl"
           />
@@ -116,6 +109,7 @@ if (user?.role !== "seller") {
             placeholder="Price"
             onChange={handleChange}
             className="border p-4 rounded-xl"
+            required
           />
 
           <input
@@ -124,49 +118,33 @@ if (user?.role !== "seller") {
             placeholder="Image URL"
             onChange={handleChange}
             className="border p-4 rounded-xl"
-          />
-
-          <input
-            type="number"
-            name="beds"
-            placeholder="Bedrooms"
-            onChange={handleChange}
-            className="border p-4 rounded-xl"
-          />
-
-          <input
-            type="number"
-            name="baths"
-            placeholder="Bathrooms"
-            onChange={handleChange}
-            className="border p-4 rounded-xl"
-          />
-
-          <input
-            type="text"
-            name="area"
-            placeholder="Area"
-            onChange={handleChange}
-            className="border p-4 rounded-xl"
+            required
           />
 
           <textarea
             name="description"
             placeholder="Description"
             onChange={handleChange}
-            className="border p-4 rounded-xl h-32"
+            className="border p-4 rounded-xl"
+          />
+
+          <input
+            type="text"
+            name="sellerPhone"
+            placeholder="Seller Phone Number"
+            onChange={handleChange}
+            className="border p-4 rounded-xl"
           />
 
           <button
-            type="submit"
-            className="bg-orange-500 text-white py-4 rounded-xl"
+            className="bg-orange-500 text-white py-4 rounded-xl text-lg"
           >
-            Add Property
+            Publish Property
           </button>
 
-        </form>
+        </div>
 
-      </div>
+      </form>
 
     </div>
   )
