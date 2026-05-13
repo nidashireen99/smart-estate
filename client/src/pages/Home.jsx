@@ -36,7 +36,7 @@ const Home = () => {
 
           const response =
             await axios.get(
-              "http://localhost:8000/api/properties"
+              "https://smart-estate-production.up.railway.app/api/properties"
             )
 
           setProperties(

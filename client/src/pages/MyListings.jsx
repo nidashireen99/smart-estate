@@ -31,7 +31,7 @@ const MyListings = () => {
 
         const response =
           await axios.get(
-            "http://localhost:8000/api/properties"
+            "https://smart-estate-production.up.railway.app/api/properties"
           )
 
         const myProperties =
@@ -66,7 +66,7 @@ const MyListings = () => {
       try {
 
         await axios.delete(
-          `http://localhost:8000/api/properties/${id}`
+          `https://smart-estate-production.up.railway.app/api/properties/${id}`
         )
 
         fetchProperties()

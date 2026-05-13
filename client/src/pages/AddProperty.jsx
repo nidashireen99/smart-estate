@@ -42,7 +42,7 @@ const AddProperty = () => {
       }
 
       await axios.post(
-        "http://localhost:8000/api/properties",
+        "https://smart-estate-production.up.railway.app/api/properties",
         propertyData
       )
 

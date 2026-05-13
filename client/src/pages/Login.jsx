@@ -34,8 +34,8 @@ const Login = () => {
       try {
 
         const url = isLogin
-          ? "http://localhost:8000/api/auth/login"
-          : "http://localhost:8000/api/auth/register"
+          ? "https://smart-estate-production.up.railway.app/api/auth/login"
+          : "https://smart-estate-production.up.railway.app/api/auth/register"
 
         const response =
           await axios.post(
