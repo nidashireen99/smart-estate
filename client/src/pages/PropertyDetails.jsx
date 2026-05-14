@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import { properties } from "../data/properties"
+import properties from "../data/properties";
 
 const PropertyDetails = () => {
 

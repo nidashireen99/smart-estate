@@ -1,87 +1,29 @@
-import EditProperty from "./pages/EditProperty"
-import MyListings from "./pages/MyListings"
-import PropertyDetails from "./pages/PropertyDetails"
-import AddProperty from "./pages/AddProperty"
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom"
+import { Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home"
-import Login from "./pages/Login"
-import Dashboard from "./pages/Dashboard"
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Buy from "./pages/Buy";
+import Rent from "./pages/Rent";
+import Favorites from "./pages/Favorites";
+import MyListings from "./pages/MyListings";
+import PropertyDetails from "./pages/PropertyDetails";
+import EditProperty from "./pages/EditProperty";
 
-import Navbar from "./components/Navbar"
-import ProtectedRoute from "./components/ProtectedRoute"
-
-const App = () => {
-
+function App() {
   return (
-
-    <BrowserRouter>
-
-      <Navbar />
-
-      <Routes>
-
-        <Route
-          path="/edit-property/:id"
-          element={
-           <ProtectedRoute>
-            <EditProperty />
-           </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/my-listings"
-          element={
-            <ProtectedRoute>
-              <MyListings />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/property/:id"
-          element={<PropertyDetails />}
-        />
-
-        <Route
-          path="/add-property"
-          element={
-            <ProtectedRoute>
-              <AddProperty />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/"
-          element={<Home />}
-        />
-
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-
-              <Dashboard />
-
-            </ProtectedRoute>
-          }
-        />
-
-      </Routes>
-
-    </BrowserRouter>
-  )
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/buy" element={<Buy />} />
+      <Route path="/rent" element={<Rent />} />
+      <Route path="/favorites" element={<Favorites />} />
+      <Route path="/my-listings" element={<MyListings />} />
+      <Route path="/property/:id" element={<PropertyDetails />} />
+      <Route path="/edit-property/:id" element={<EditProperty />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

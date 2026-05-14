@@ -1,106 +1,103 @@
-import toast
-from "react-hot-toast"
-
-import { useState }
-from "react"
-
-import axios
-from "axios"
-
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom"
-
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
 
-  const navigate =
-    useNavigate()
+  const navigate = useNavigate();
 
-  const [formData,
-    setFormData] =
-      useState({
+  const [formData, setFormData] = useState({
 
-        email: "",
+    email: "",
+    password: "",
 
-        password: "",
-      })
+  });
 
-  const handleChange =
-    (e) => {
+  const handleChange = (e) => {
 
-      setFormData({
+    setFormData({
 
-        ...formData,
+      ...formData,
+      [e.target.name]: e.target.value,
 
-        [e.target.name]:
-          e.target.value,
-      })
+    });
+  };
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+      const response = await axios.post(
+
+        "http://localhost:8000/api/auth/login",
+
+        formData
+      );
+
+      // SAVE USER DATA
+
+      localStorage.setItem(
+
+        "token",
+        response.data.token
+      );
+
+      localStorage.setItem(
+
+        "user",
+
+        JSON.stringify(
+          response.data.user
+        )
+      );
+
+      // BEAUTIFUL POPUP
+
+      toast.success(
+
+        `Welcome ${response.data.user.name} 🎉
+
+Thanks for visiting SmartEstate.
+
+Explore premium properties,
+connect with trusted sellers,
+and discover your dream home today 🏡`,
+
+        {
+          duration: 8000,
+        }
+      );
+
+      // NAVIGATE
+
+      navigate("/");
+
+    } catch (error) {
+
+      toast.error(
+
+        "Invalid email or password"
+      );
+
+      console.log(error);
     }
-
-  const handleSubmit =
-    async (e) => {
-
-      e.preventDefault()
-
-      try {
-
-        const response =
-          await axios.post(
-
-            "http://localhost:8000/api/auth/login",
-
-            formData
-          )
-
-        localStorage.setItem(
-
-          "token",
-
-          response.data.token
-        )
-
-        localStorage.setItem(
-
-          "user",
-
-          JSON.stringify(
-            response.data.user
-          )
-        )
-
-        // POPUP
-
-        toast.success(
-          `Welcome ${response.data.user.name} 🎉`,
-          {
-            duration: 4000,
-          }
-        )
-
-        navigate("/")
-
-      } catch (error) {
-
-        console.log(error)
-
-        alert(
-          "Invalid Credentials"
-        )
-      }
-    }
+  };
 
   return (
 
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
 
       <form
+
         onSubmit={handleSubmit}
-        className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md"
+
+        className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md"
       >
 
-        <h1 className="text-5xl font-bold text-center mb-10">
+        <h1 className="text-4xl font-bold text-center mb-8">
 
           Login
 
@@ -128,7 +125,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="bg-orange-500 text-white py-4 rounded-xl text-lg hover:bg-orange-600"
+            className="bg-orange-500 text-white py-4 rounded-xl hover:bg-orange-600"
           >
 
             Login
@@ -143,7 +140,7 @@ const Login = () => {
 
           <Link
             to="/register"
-            className="text-orange-500 font-bold ml-2"
+            className="text-orange-500 font-semibold ml-2"
           >
 
             Register
@@ -155,7 +152,7 @@ const Login = () => {
       </form>
 
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

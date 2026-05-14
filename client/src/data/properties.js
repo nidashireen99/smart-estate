@@ -3,34 +3,23 @@ const properties = [
     id: 1,
     title: "Luxury Villa",
     location: "Bangalore",
-    price: "₹ 2.5 Cr",
-    type: "Villa",
-
+    price: 7500000,
     image:
       "https://images.unsplash.com/photo-1568605114967-8130f3a36994",
+    sellerName: "Nida Shireen",
+    sellerPhone: "9876543210",
   },
 
   {
     id: 2,
     title: "Modern Apartment",
     location: "Hyderabad",
-    price: "₹ 95 Lakhs",
-    type: "Apartment",
-
+    price: 4500000,
     image:
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+    sellerName: "Rahul",
+    sellerPhone: "9999999999",
   },
+];
 
-  {
-    id: 3,
-    title: "Premium Plot",
-    location: "Mumbai",
-    price: "₹ 1.2 Cr",
-    type: "Plot",
-
-    image:
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
-  },
-]
-
-export default properties
+export default properties;

@@ -1,13 +1,15 @@
+import Navbar from "../components/Navbar";
 import PropertyCard from "../components/PropertyCard"
-import { properties } from "../data/properties"
+import properties  from "../data/properties";
 
 const Home = () => {
 
   return (
 
     <div className="bg-gray-100 min-h-screen">
+      <Navbar />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
 
       <div className="bg-black text-white py-24 text-center">
 
@@ -19,11 +21,11 @@ const Home = () => {
 
         <p className="text-xl text-gray-300 mb-8">
 
-          Buy, Rent & Sell Premium Properties Easily
+          Buy, Sell & Rent Properties Easily
 
         </p>
 
-        <button className="bg-orange-500 px-8 py-4 rounded-xl text-xl hover:bg-orange-600">
+        <button className="bg-orange-500 px-8 py-4 rounded-xl text-xl">
 
           Explore Properties
 
@@ -31,7 +33,7 @@ const Home = () => {
 
       </div>
 
-      {/* PROPERTY SECTION */}
+      {/* PROPERTIES */}
 
       <div className="p-10">
 
@@ -56,9 +58,9 @@ const Home = () => {
 
       </div>
 
-      {/* STATS SECTION */}
+      {/* STATS */}
 
-      <div className="bg-white py-16 px-10">
+      <div className="bg-white py-20 px-10">
 
         <div className="grid md:grid-cols-4 gap-8 text-center">
 
@@ -70,9 +72,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="text-gray-600 mt-3">
+            <p className="mt-3 text-gray-600">
 
-              Properties Listed
+              Properties
 
             </p>
 
@@ -86,9 +88,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="text-gray-600 mt-3">
+            <p className="mt-3 text-gray-600">
 
-              Happy Customers
+              Customers
 
             </p>
 
@@ -102,9 +104,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="text-gray-600 mt-3">
+            <p className="mt-3 text-gray-600">
 
-              Cities Covered
+              Cities
 
             </p>
 
@@ -118,9 +120,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="text-gray-600 mt-3">
+            <p className="mt-3 text-gray-600">
 
-              Customer Support
+              Support
 
             </p>
 
