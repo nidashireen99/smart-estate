@@ -1,60 +1,119 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import Navbar from "../components/Navbar";
-import PropertyCard from "../components/PropertyCard"
-import properties  from "../data/properties";
+import PropertyCard from "../components/PropertyCard";
 
 const Home = () => {
+
+  const [properties, setProperties] = useState([]);
+
+  const [search, setSearch] = useState("");
+
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+
+    const fetchProperties = async () => {
+
+      try {
+
+        const response = await axios.get(
+          "https://YOUR-RAILWAY-URL/api/properties"
+        );
+
+        setProperties(response.data);
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+    fetchProperties();
+
+  }, []);
+
+  const filteredProperties =
+    properties.filter((property) => {
+
+      const matchesSearch =
+        property.title
+          .toLowerCase()
+          .includes(search.toLowerCase());
+
+      const matchesFilter =
+        filter === "All"
+          ? true
+          : property.type === filter;
+
+      return matchesSearch && matchesFilter;
+    });
 
   return (
 
     <div className="bg-gray-100 min-h-screen">
+
       <Navbar />
 
       {/* HERO */}
 
       <div className="bg-black text-white py-24 text-center">
 
-        <h1 className="text-6xl font-bold mb-6">
+        <h1 className="text-6xl font-bold mb-5">
 
           Find Your Dream Home
 
         </h1>
 
-        <p className="text-xl text-gray-300 mb-8">
+        <p className="text-gray-300 text-xl">
 
-          Buy, Sell & Rent Properties Easily
-
+          Buy, Sell & Rent Premium Properties
         </p>
 
-        <button className="bg-orange-500 px-8 py-4 rounded-xl text-xl">
+      </div>
 
-          Explore Properties
+      {/* SEARCH + FILTER */}
 
-        </button>
+      <div className="flex flex-col md:flex-row gap-5 p-10">
+
+        <input
+          type="text"
+          placeholder="Search property..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="flex-1 p-4 rounded-xl border"
+        />
+
+        <select
+          value={filter}
+          onChange={(e) =>
+            setFilter(e.target.value)
+          }
+          className="p-4 rounded-xl border"
+        >
+
+          <option>All</option>
+          <option>Buy</option>
+          <option>Rent</option>
+
+        </select>
 
       </div>
 
       {/* PROPERTIES */}
 
-      <div className="p-10">
+      <div className="grid md:grid-cols-3 gap-8 p-10">
 
-        <h1 className="text-4xl font-bold text-center mb-10">
+        {filteredProperties.map((property) => (
 
-          Featured Properties
-
-        </h1>
-
-        <div className="grid md:grid-cols-3 gap-8">
-
-          {properties.map((property) => (
-
-            <PropertyCard
-              key={property.id}
-              property={property}
-            />
-
-          ))}
-
-        </div>
+          <PropertyCard
+            key={property._id}
+            property={property}
+          />
+        ))}
 
       </div>
 
@@ -72,10 +131,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3">
 
               Properties
-
             </p>
 
           </div>
@@ -88,10 +146,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3">
 
               Customers
-
             </p>
 
           </div>
@@ -104,10 +161,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3">
 
               Cities
-
             </p>
 
           </div>
@@ -120,10 +176,9 @@ const Home = () => {
 
             </h1>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3">
 
               Support
-
             </p>
 
           </div>
@@ -133,7 +188,7 @@ const Home = () => {
       </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

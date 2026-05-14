@@ -1,84 +1,95 @@
-import { useParams } from "react-router-dom"
-import properties from "../data/properties";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const PropertyDetails = () => {
 
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const property =
-    properties.find(
-      (item) =>
-        item.id === Number(id)
-    )
+  const [property, setProperty] = useState(null);
+
+  useEffect(() => {
+
+    const fetchProperty = async () => {
+
+      try {
+
+        const response = await axios.get(
+          `https://smart-estate-production.up.railway.app/api/properties/${id}`
+        );
+
+        setProperty(response.data);
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+    fetchProperty();
+
+  }, [id]);
 
   if (!property) {
+
     return (
-      <h1 className="text-center text-4xl mt-20">
-        Property Not Found
+
+      <h1 className="text-center text-3xl mt-20">
+
+        Loading...
       </h1>
-    )
+    );
   }
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-10">
+    <div className="p-10">
 
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl overflow-hidden shadow-xl">
+      <img
+        src={property.image}
+        alt=""
+        className="w-full h-[500px] object-cover rounded-2xl"
+      />
 
-        <img
-          src={property.image}
-          alt=""
-          className="w-full h-[500px] object-cover"
-        />
+      <h1 className="text-5xl font-bold mt-10">
 
-        <div className="p-10">
+        {property.title}
 
-          <h1 className="text-5xl font-bold mb-5">
-            {property.title}
-          </h1>
+      </h1>
 
-          <p className="text-2xl text-orange-500 font-bold mb-5">
-            ₹ {property.price}
-          </p>
+      <p className="text-2xl text-gray-600 mt-4">
 
-          <p className="text-gray-600 text-lg mb-4">
-            📍 {property.location}
-          </p>
+        📍 {property.location}
 
-          <p className="text-gray-600 text-lg mb-6">
-            🏠 {property.exactAddress}
-          </p>
+      </p>
 
-          <p className="text-lg leading-8 mb-10">
-            {property.description}
-          </p>
+      <h2 className="text-4xl text-orange-500 font-bold mt-6">
 
-          <div className="bg-gray-100 p-8 rounded-2xl">
+        ₹ {property.price}
 
-            <h2 className="text-3xl font-bold mb-5">
-              Contact Seller
-            </h2>
+      </h2>
 
-            <p className="mb-3">
-              👤 {property.sellerName}
-            </p>
+      <div className="mt-10 bg-gray-100 p-6 rounded-2xl">
 
-            <p className="mb-3">
-              📧 {property.sellerEmail}
-            </p>
+        <h2 className="text-3xl font-bold mb-5">
 
-            <p className="mb-3">
-              📞 {property.sellerPhone}
-            </p>
+          Seller Details
+        </h2>
 
-          </div>
+        <p className="text-xl">
 
-        </div>
+          👤 {property.sellerName}
+        </p>
+
+        <p className="text-xl mt-3">
+
+          📞 {property.sellerPhone}
+        </p>
 
       </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default PropertyDetails
+export default PropertyDetails;
