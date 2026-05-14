@@ -10,7 +10,7 @@ const Home = () => {
 
   const [search, setSearch] = useState("");
 
-  const [filter, setFilter] = useState("All");
+  const [priceFilter, setPriceFilter] = useState("All");
 
   useEffect(() => {
 
@@ -19,7 +19,7 @@ const Home = () => {
       try {
 
         const response = await axios.get(
-          "https://YOUR-RAILWAY-URL/api/properties"
+          "https://smart-estate-production.up.railway.app/api/properties"
         );
 
         setProperties(response.data);
@@ -34,20 +34,47 @@ const Home = () => {
 
   }, []);
 
+  // FILTERS
+
   const filteredProperties =
     properties.filter((property) => {
 
       const matchesSearch =
+
         property.title
+          .toLowerCase()
+          .includes(search.toLowerCase())
+
+        ||
+
+        property.location
           .toLowerCase()
           .includes(search.toLowerCase());
 
-      const matchesFilter =
-        filter === "All"
-          ? true
-          : property.type === filter;
+      let matchesPrice = true;
 
-      return matchesSearch && matchesFilter;
+      if (priceFilter === "Below 50 Lakhs") {
+
+        matchesPrice =
+          property.price < 5000000;
+      }
+
+      if (priceFilter === "50 Lakhs - 1 Crore") {
+
+        matchesPrice =
+
+          property.price >= 5000000 &&
+
+          property.price <= 10000000;
+      }
+
+      if (priceFilter === "Above 1 Crore") {
+
+        matchesPrice =
+          property.price > 10000000;
+      }
+
+      return matchesSearch && matchesPrice;
     });
 
   return (
@@ -68,7 +95,7 @@ const Home = () => {
 
         <p className="text-gray-300 text-xl">
 
-          Buy, Sell & Rent Premium Properties
+          Buy, Rent & Sell Premium Properties
         </p>
 
       </div>
@@ -79,7 +106,7 @@ const Home = () => {
 
         <input
           type="text"
-          placeholder="Search property..."
+          placeholder="Search by property or location..."
           value={search}
           onChange={(e) =>
             setSearch(e.target.value)
@@ -88,32 +115,52 @@ const Home = () => {
         />
 
         <select
-          value={filter}
+          value={priceFilter}
           onChange={(e) =>
-            setFilter(e.target.value)
+            setPriceFilter(e.target.value)
           }
           className="p-4 rounded-xl border"
         >
 
           <option>All</option>
-          <option>Buy</option>
-          <option>Rent</option>
+
+          <option>
+            Below 50 Lakhs
+          </option>
+
+          <option>
+            50 Lakhs - 1 Crore
+          </option>
+
+          <option>
+            Above 1 Crore
+          </option>
 
         </select>
 
       </div>
 
-      {/* PROPERTIES */}
+      {/* PROPERTY CARDS */}
 
       <div className="grid md:grid-cols-3 gap-8 p-10">
 
-        {filteredProperties.map((property) => (
+        {filteredProperties.length > 0 ? (
 
-          <PropertyCard
-            key={property._id}
-            property={property}
-          />
-        ))}
+          filteredProperties.map((property) => (
+
+            <PropertyCard
+              key={property._id}
+              property={property}
+            />
+          ))
+
+        ) : (
+
+          <h1 className="text-3xl font-bold">
+
+            No Properties Found
+          </h1>
+        )}
 
       </div>
 
