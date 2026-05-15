@@ -24,33 +24,40 @@ const AddProperty = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
+  try {
 
-      const res = await API.post(
-        "/properties",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+    const token = localStorage.getItem("token");
 
-      alert("Property Added Successfully ✅");
+    console.log("TOKEN:", token);
 
-      navigate("/");
-    } catch (error) {
-      console.log(error);
+    const res = await API.post(
+      "/properties",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to add property"
-      );
-    }
-  };
+    console.log(res.data);
+
+    alert("Property Added Successfully ✅");
+
+    navigate("/");
+
+  } catch (error) {
+
+    console.log(error.response);
+
+    alert(
+      error.response?.data?.message ||
+      "Failed to add property"
+    );
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
