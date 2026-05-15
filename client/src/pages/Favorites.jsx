@@ -1,38 +1,62 @@
-import { useContext } from "react"
+import { useEffect, useState } from "react";
 
-import {
-  FavoriteContext,
-} from "../context/FavoriteContext"
-
-import PropertyCard from "../components/PropertyCard"
+import Navbar from "../components/Navbar";
+import PropertyCard from "../components/PropertyCard";
 
 const Favorites = () => {
 
-  const { favorites } =
-    useContext(FavoriteContext)
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+
+    loadFavorites();
+
+  }, []);
+
+  const loadFavorites = () => {
+
+    const storedFavorites =
+      JSON.parse(localStorage.getItem("favorites")) || [];
+
+    setFavorites(storedFavorites);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
+    <div className="bg-gray-100 min-h-screen">
 
-      <h1 className="text-5xl font-bold mb-10">
-        Favorite Properties ❤️
-      </h1>
+      {/* NAVBAR */}
+      <Navbar />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="p-6">
 
-        {favorites.map((property) => (
+        <h1 className="text-4xl font-bold mb-8">
+          ❤️ My Favorite Properties
+        </h1>
 
-          <PropertyCard
-            key={property.id}
-            property={property}
-          />
+        {favorites.length === 0 ? (
 
-        ))}
+          <h2 className="text-2xl">
+            No favorite properties yet.
+          </h2>
+
+        ) : (
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {favorites.map((property) => (
+              <PropertyCard
+                key={property._id}
+                property={property}
+              />
+            ))}
+
+          </div>
+
+        )}
 
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Favorites
+export default Favorites;
