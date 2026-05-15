@@ -33,41 +33,37 @@ const Register = () => {
         formData
       );
 
-      // SAVE TOKEN
       localStorage.setItem("token", response.data.token);
 
-      // SAVE USER
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
 
-      // POPUP
       toast.success(
         `Welcome ${response.data.user.name} 🎉
 
-You have successfully registered as a ${response.data.user.role}.
+Successfully registered as ${response.data.user.role}
 
-Thanks for joining SmartEstate 🏡
-
-Explore properties,
-connect with trusted sellers,
-and find your perfect home today.`,
+Thanks for joining SmartEstate 🏡`,
         {
           duration: 15000,
         }
       );
 
-      // REDIRECT
       navigate("/");
 
-      // REFRESH NAVBAR
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
     } catch (error) {
       console.log(error);
 
-      toast.error("Registration Failed ❌");
+      toast.error(
+        error.response?.data?.message ||
+          "Registration Failed ❌"
+      );
     } finally {
       setLoading(false);
     }
@@ -122,8 +118,8 @@ and find your perfect home today.`,
           onChange={handleChange}
           className="w-full border p-4 rounded-xl mb-6"
         >
-          <option value="buyer">Buyer</option>
-          <option value="seller">Seller</option>
+          <option value="buyer">Register as Buyer</option>
+          <option value="seller">Register as Seller</option>
         </select>
 
         <button

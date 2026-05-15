@@ -31,34 +31,29 @@ const Login = () => {
         formData
       );
 
-      // SAVE TOKEN
       localStorage.setItem("token", response.data.token);
 
-      // SAVE USER
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
 
-      // POPUP
       toast.success(
         `Welcome ${response.data.user.name} 🎉
 
-Thanks for visiting SmartEstate.
+Thanks for visiting SmartEstate 🏡
 
-Explore premium properties,
-connect with trusted sellers,
-and discover your dream home today 🏡`,
+Explore premium properties and connect with trusted sellers.`,
         {
           duration: 15000,
         }
       );
 
-      // REDIRECT
       navigate("/");
 
-      // REFRESH NAVBAR
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
     } catch (error) {
       console.log(error);

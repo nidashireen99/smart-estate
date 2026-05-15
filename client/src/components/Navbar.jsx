@@ -13,7 +13,7 @@ const Navbar = () => {
         </h1>
       </Link>
 
-      {/* RIGHT SIDE */}
+      {/* MENU */}
       <div className="flex items-center gap-6">
 
         <Link to="/">
@@ -22,12 +22,18 @@ const Navbar = () => {
           </button>
         </Link>
 
+        {/* FAVORITES */}
         {user && (
-          <>
-            <h2 className="font-bold text-orange-500 text-lg">
-              👋 {user.name}
-            </h2>
+          <Link to="/favorites">
+            <button className="font-semibold hover:text-red-500 text-2xl">
+              ❤️
+            </button>
+          </Link>
+        )}
 
+        {/* SELLER ONLY */}
+        {user && user.role === "seller" && (
+          <>
             <Link to="/my-listings">
               <button className="font-semibold hover:text-orange-500">
                 My Listings
@@ -42,6 +48,14 @@ const Navbar = () => {
           </>
         )}
 
+        {/* USER NAME */}
+        {user && (
+          <h2 className="font-bold text-orange-500">
+            👋 {user.name}
+          </h2>
+        )}
+
+        {/* LOGIN / REGISTER */}
         {!user ? (
           <>
             <Link to="/login">
