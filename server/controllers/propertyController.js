@@ -1,107 +1,62 @@
-const Property =
-  require("../models/Property")
-
-// CREATE
-
-const createProperty =
-  async (req, res) => {
-
-    try {
-
-      const property =
-        await Property.create(
-          req.body
-        )
-
-      res.status(201).json(
-        property
-      )
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message,
-      })
-    }
-  }
+const Property = require("../models/Property");
+const cloudinary = require("../config/cloudinary");
 
 // GET ALL
 
-const getProperties =
-  async (req, res) => {
+exports.getProperties = async (req, res) => {
+  try {
+    const properties = await Property.find();
 
-    try {
-
-      const properties =
-        await Property.find()
-
-      res.status(200).json(
-        properties
-      )
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message,
-      })
-    }
+    res.json(properties);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
+};
 
-// UPDATE
+// GET SINGLE
 
-const updateProperty =
-  async (req, res) => {
+exports.getProperty = async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
 
-    try {
-
-      const updatedProperty =
-        await Property.findByIdAndUpdate(
-          req.params.id,
-          req.body,
-          {
-            new: true,
-          }
-        )
-
-      res.status(200).json(
-        updatedProperty
-      )
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message,
-      })
-    }
+    res.json(property);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
+};
 
-// DELETE
+// ADD PROPERTY
 
-const deleteProperty =
-  async (req, res) => {
+exports.addProperty = async (req, res) => {
+  try {
+    const uploadedImages = [];
 
-    try {
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path);
 
-      await Property.findByIdAndDelete(
-        req.params.id
-      )
-
-      res.status(200).json({
-        message:
-          "Property deleted",
-      })
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message,
-      })
+        uploadedImages.push(result.secure_url);
+      }
     }
-  }
 
-module.exports = {
-  createProperty,
-  getProperties,
-  updateProperty,
-  deleteProperty,
-}
+    const property = new Property({
+      title: req.body.title,
+      location: req.body.location,
+      price: req.body.price,
+      images: uploadedImages,
+      beds: req.body.beds,
+      baths: req.body.baths,
+      area: req.body.area,
+      description: req.body.description,
+      sellerName: req.body.sellerName,
+      sellerPhone: req.body.sellerPhone,
+      seller: req.user.id,
+    });
+
+    await property.save();
+
+    res.status(201).json(property);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

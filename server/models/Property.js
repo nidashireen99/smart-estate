@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const propertySchema = new mongoose.Schema(
   {
@@ -12,49 +12,36 @@ const propertySchema = new mongoose.Schema(
       required: true,
     },
 
-    exactAddress: {
-      type: String,
-    },
-
     price: {
       type: Number,
       required: true,
     },
 
-    images: [
-      {
-        type: String,
-      },
-    ],
-
-    description: {
-      type: String,
+    images: {
+      type: [String],
+      default: [],
     },
 
-    sellerName: {
-      type: String,
-    },
+    beds: Number,
 
-    sellerEmail: {
-      type: String,
-    },
+    baths: Number,
 
-    sellerPhone: {
-      type: String,
-    },
+    area: String,
 
-    createdBy: {
-      type: String,
+    description: String,
+
+    sellerName: String,
+
+    sellerPhone: String,
+
+    seller: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
-
   {
     timestamps: true,
   }
-)
+);
 
-module.exports =
-  mongoose.model(
-    "Property",
-    propertySchema
-  )
+module.exports = mongoose.model("Property", propertySchema);

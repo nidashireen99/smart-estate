@@ -1,131 +1,87 @@
-import { useState } from "react"
-
-import axios from "axios"
-
-import { useNavigate }
-from "react-router-dom"
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AddProperty = () => {
 
-  const navigate =
-    useNavigate()
+  const navigate = useNavigate();
 
-  const user =
-    JSON.parse(
-      localStorage.getItem(
-        "user"
-      )
-    )
+  const [formData, setFormData] = useState({
+    title: "",
+    location: "",
+    price: "",
+    beds: "",
+    baths: "",
+    area: "",
+    description: "",
+    sellerName: "",
+    sellerPhone: "",
+  });
 
-  const [formData,
-    setFormData] =
-      useState({
+  const [images, setImages] = useState([]);
 
-        title: "",
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-        location: "",
+  const handleImageChange = (e) => {
+    setImages(e.target.files);
+  };
 
-        exactAddress: "",
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        price: "",
+    try {
+      const token = localStorage.getItem("token");
 
-        image: "",
+      const data = new FormData();
 
-        description: "",
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
 
-        sellerName:
-          user?.name || "",
-
-        sellerEmail:
-          user?.email || "",
-
-        sellerPhone: "",
-
-      })
-
-  const handleChange =
-    (e) => {
-
-      setFormData({
-
-        ...formData,
-
-        [e.target.name]:
-          e.target.value,
-      })
-    }
-
-  const handleSubmit =
-    async (e) => {
-
-      e.preventDefault()
-
-      try {
-
-        await axios.post(
-
-          "https://smart-estate-production.up.railway.app/api/properties",
-
-          {
-
-            ...formData,
-
-            createdBy:
-              user.email,
-          }
-        )
-
-        alert(
-          "Property Added Successfully"
-        )
-
-        navigate(
-          "/my-listings"
-        )
-
-      } catch (error) {
-
-        console.log(error)
-
-        alert(
-          "Something went wrong"
-        )
+      for (let i = 0; i < images.length; i++) {
+        data.append("images", images[i]);
       }
+
+      await axios.post(
+        "https://smart-estate-production.up.railway.app/api/properties",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toast.success("Property Added Successfully 🎉");
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Failed to Add Property");
     }
-
-  // BUYER BLOCK
-
-  if (
-    user?.role !==
-    "seller"
-  ) {
-
-    return (
-
-      <h1 className="text-4xl text-center mt-20 font-bold">
-
-        Only Sellers Can Add Properties
-
-      </h1>
-    )
-  }
+  };
 
   return (
-
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-2xl"
+        className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-3xl"
       >
 
-        <h1 className="text-4xl font-bold mb-8 text-center">
-
+        <h1 className="text-4xl font-bold text-center mb-8">
           Add Property
-
         </h1>
 
-        <div className="grid gap-5">
+        <div className="grid md:grid-cols-2 gap-5">
 
           <input
             type="text"
@@ -139,68 +95,97 @@ const AddProperty = () => {
           <input
             type="text"
             name="location"
-            placeholder="City / Area"
+            placeholder="Location"
             onChange={handleChange}
             className="border p-4 rounded-xl"
             required
           />
 
           <input
-            type="text"
-            name="exactAddress"
-            placeholder="Exact Property Address"
+            type="number"
+            name="price"
+            placeholder="Price"
+            onChange={handleChange}
+            className="border p-4 rounded-xl"
+            required
+          />
+
+          <input
+            type="number"
+            name="beds"
+            placeholder="Bedrooms"
             onChange={handleChange}
             className="border p-4 rounded-xl"
           />
 
           <input
             type="number"
-            name="price"
-            placeholder="Property Price"
+            name="baths"
+            placeholder="Bathrooms"
             onChange={handleChange}
             className="border p-4 rounded-xl"
-            required
           />
 
           <input
             type="text"
-            name="image"
-            placeholder="Image URL"
+            name="area"
+            placeholder="Area"
             onChange={handleChange}
             className="border p-4 rounded-xl"
-            required
           />
 
-          <textarea
-            name="description"
-            placeholder="Property Description"
+          <input
+            type="text"
+            name="sellerName"
+            placeholder="Seller Name"
             onChange={handleChange}
-            className="border p-4 rounded-xl h-32"
+            className="border p-4 rounded-xl"
           />
 
           <input
             type="text"
             name="sellerPhone"
-            placeholder="Seller Phone Number"
+            placeholder="Seller Phone"
             onChange={handleChange}
             className="border p-4 rounded-xl"
           />
 
-          <button
-            type="submit"
-            className="bg-orange-500 text-white py-4 rounded-xl text-lg hover:bg-orange-600"
-          >
+        </div>
 
-            Publish Property
+        <textarea
+          name="description"
+          placeholder="Description"
+          onChange={handleChange}
+          className="border p-4 rounded-xl w-full mt-5 h-32"
+        />
 
-          </button>
+        <div className="mt-5">
+
+          <label className="font-semibold block mb-3">
+            Upload Multiple Images
+          </label>
+
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+            className="border p-3 rounded-xl w-full"
+          />
 
         </div>
+
+        <button
+          type="submit"
+          className="bg-orange-500 text-white w-full py-4 rounded-xl mt-6"
+        >
+          Add Property
+        </button>
 
       </form>
 
     </div>
-  )
-}
+  );
+};
 
-export default AddProperty
+export default AddProperty;

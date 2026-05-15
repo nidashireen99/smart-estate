@@ -7,7 +7,7 @@ const PropertyCard = ({ property }) => {
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
       <img
-        src={property.image}
+        src={property.images?.[0]}
         alt=""
         className="h-64 w-full object-cover"
       />
