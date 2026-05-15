@@ -13,7 +13,7 @@ const Navbar = () => {
         </h1>
       </Link>
 
-      {/* MENU */}
+      {/* RIGHT SIDE */}
       <div className="flex items-center gap-6">
 
         <Link to="/">
@@ -24,6 +24,10 @@ const Navbar = () => {
 
         {user && (
           <>
+            <h2 className="font-bold text-orange-500 text-lg">
+              👋 {user.name}
+            </h2>
+
             <Link to="/my-listings">
               <button className="font-semibold hover:text-orange-500">
                 My Listings
