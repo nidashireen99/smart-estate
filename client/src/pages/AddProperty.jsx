@@ -1,25 +1,20 @@
 import { useState } from "react";
-import API from "../services/api";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import API from "../services/api";
 
 const AddProperty = () => {
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
     location: "",
     price: "",
+    image: "",
     beds: "",
     baths: "",
     area: "",
     description: "",
-    sellerName: "",
-    sellerPhone: "",
   });
-
-  const [images, setImages] = useState([]);
 
   const handleChange = (e) => {
     setFormData({
@@ -28,67 +23,52 @@ const AddProperty = () => {
     });
   };
 
-  const handleImageChange = (e) => {
-    setImages(e.target.files);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
 
-      const data = new FormData();
-
-      Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
-      });
-
-      for (let i = 0; i < images.length; i++) {
-        data.append("images", images[i]);
-      }
-
-      await API.post(
-        "https://smart-estate-production.up.railway.app/api/properties",
-        data,
+      const res = await API.post(
+        "/properties",
+        formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
 
-      toast.success("Property Added Successfully 🎉");
+      alert("Property Added Successfully ✅");
 
       navigate("/");
     } catch (error) {
       console.log(error);
 
-      toast.error("Failed to Add Property");
+      alert(
+        error.response?.data?.message ||
+          "Failed to add property"
+      );
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
-
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-3xl"
+        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl"
       >
-
-        <h1 className="text-4xl font-bold text-center mb-8">
+        <h1 className="text-3xl font-bold mb-6 text-center">
           Add Property
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-5">
-
+        <div className="grid md:grid-cols-2 gap-4">
           <input
             type="text"
             name="title"
             placeholder="Property Title"
             onChange={handleChange}
-            className="border p-4 rounded-xl"
+            className="border p-3 rounded"
             required
           />
 
@@ -97,7 +77,7 @@ const AddProperty = () => {
             name="location"
             placeholder="Location"
             onChange={handleChange}
-            className="border p-4 rounded-xl"
+            className="border p-3 rounded"
             required
           />
 
@@ -106,8 +86,16 @@ const AddProperty = () => {
             name="price"
             placeholder="Price"
             onChange={handleChange}
-            className="border p-4 rounded-xl"
+            className="border p-3 rounded"
             required
+          />
+
+          <input
+            type="text"
+            name="image"
+            placeholder="Image URL"
+            onChange={handleChange}
+            className="border p-3 rounded"
           />
 
           <input
@@ -115,7 +103,7 @@ const AddProperty = () => {
             name="beds"
             placeholder="Bedrooms"
             onChange={handleChange}
-            className="border p-4 rounded-xl"
+            className="border p-3 rounded"
           />
 
           <input
@@ -123,67 +111,33 @@ const AddProperty = () => {
             name="baths"
             placeholder="Bathrooms"
             onChange={handleChange}
-            className="border p-4 rounded-xl"
+            className="border p-3 rounded"
           />
 
           <input
             type="text"
             name="area"
-            placeholder="Area"
+            placeholder="Area in sqft"
             onChange={handleChange}
-            className="border p-4 rounded-xl"
+            className="border p-3 rounded"
           />
-
-          <input
-            type="text"
-            name="sellerName"
-            placeholder="Seller Name"
-            onChange={handleChange}
-            className="border p-4 rounded-xl"
-          />
-
-          <input
-            type="text"
-            name="sellerPhone"
-            placeholder="Seller Phone"
-            onChange={handleChange}
-            className="border p-4 rounded-xl"
-          />
-
         </div>
 
         <textarea
           name="description"
           placeholder="Description"
           onChange={handleChange}
-          className="border p-4 rounded-xl w-full mt-5 h-32"
-        />
-
-        <div className="mt-5">
-
-          <label className="font-semibold block mb-3">
-            Upload Multiple Images
-          </label>
-
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-            className="border p-3 rounded-xl w-full"
-          />
-
-        </div>
+          className="border p-3 rounded w-full mt-4"
+          rows="4"
+        ></textarea>
 
         <button
           type="submit"
-          className="bg-orange-500 text-white w-full py-4 rounded-xl mt-6"
+          className="bg-orange-500 text-white px-6 py-3 rounded mt-6 w-full"
         >
           Add Property
         </button>
-
       </form>
-
     </div>
   );
 };
