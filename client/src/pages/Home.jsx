@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PropertyCard from "../components/PropertyCard";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
@@ -30,7 +31,7 @@ const Home = () => {
   useEffect(() => {
     let updated = [...properties];
 
-    // SEARCH BY LOCATION OR TITLE
+    // SEARCH
     if (search) {
       updated = updated.filter(
         (property) =>
@@ -43,7 +44,7 @@ const Home = () => {
       );
     }
 
-    // PRICE FILTER
+    // FILTER
     if (priceFilter === "low") {
       updated = updated.filter((p) => p.price <= 5000000);
     }
@@ -64,7 +65,10 @@ const Home = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
 
-      {/* HERO SECTION */}
+      {/* NAVBAR */}
+      <Navbar />
+
+      {/* HERO */}
       <div className="bg-black text-white py-20 rounded-3xl mx-6 mt-6 text-center">
         <h1 className="text-6xl font-bold mb-6">
           Find Your Dream Home
@@ -78,7 +82,6 @@ const Home = () => {
       {/* SEARCH + FILTER */}
       <div className="flex flex-col md:flex-row gap-4 px-6 mt-10">
 
-        {/* SEARCH BAR */}
         <input
           type="text"
           placeholder="Search by title or location..."
@@ -87,7 +90,6 @@ const Home = () => {
           className="flex-1 p-4 rounded-xl border outline-none shadow"
         />
 
-        {/* FILTER */}
         <select
           value={priceFilter}
           onChange={(e) => setPriceFilter(e.target.value)}
@@ -100,7 +102,7 @@ const Home = () => {
         </select>
       </div>
 
-      {/* PROPERTY SECTION */}
+      {/* PROPERTIES */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6 mt-6">
 
         {filteredProperties.length > 0 ? (
@@ -116,6 +118,45 @@ const Home = () => {
           </h2>
         )}
       </div>
+
+      {/* STATS SECTION */}
+      <div className="bg-black text-white mt-20 py-16 px-6">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+
+          <div>
+            <h1 className="text-5xl font-bold text-orange-500">
+              500+
+            </h1>
+
+            <p className="text-xl mt-4">
+              Premium Properties
+            </p>
+          </div>
+
+          <div>
+            <h1 className="text-5xl font-bold text-orange-500">
+              1000+
+            </h1>
+
+            <p className="text-xl mt-4">
+              Happy Clients
+            </p>
+          </div>
+
+          <div>
+            <h1 className="text-5xl font-bold text-orange-500">
+              24/7
+            </h1>
+
+            <p className="text-xl mt-4">
+              Customer Support
+            </p>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   );
 };
