@@ -1,27 +1,30 @@
 const express = require("express");
-const multer = require("multer");
-
-const {
-  getProperties,
-  getProperty,
-  addProperty,
-} = require("../controllers/propertyController");
-
-const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const upload = multer({ dest: "uploads/" });
+const {
+  getProperties,
+  createProperty,
+  getPropertyById,
+  updateProperty,
+  deleteProperty,
+} = require("../controllers/propertyController");
 
+const { protect } = require("../middleware/authMiddleware");
+
+// GET ALL PROPERTIES
 router.get("/", getProperties);
 
-router.get("/:id", getProperty);
+// GET SINGLE PROPERTY
+router.get("/:id", getPropertyById);
 
-router.post(
-  "/",
-  authMiddleware,
-  upload.array("images", 10),
-  addProperty
-);
+// CREATE PROPERTY
+router.post("/", protect, createProperty);
+
+// UPDATE PROPERTY
+router.put("/:id", protect, updateProperty);
+
+// DELETE PROPERTY
+router.delete("/:id", protect, deleteProperty);
 
 module.exports = router;

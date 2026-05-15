@@ -1,12 +1,9 @@
 const Property = require("../models/Property");
-const cloudinary = require("../config/cloudinary");
 
 // GET ALL
-
-exports.getProperties = async (req, res) => {
+const getProperties = async (req, res) => {
   try {
     const properties = await Property.find();
-
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -14,10 +11,15 @@ exports.getProperties = async (req, res) => {
 };
 
 // GET SINGLE
-
-exports.getProperty = async (req, res) => {
+const getPropertyById = async (req, res) => {
   try {
     const property = await Property.findById(req.params.id);
+
+    if (!property) {
+      return res.status(404).json({
+        message: "Property not found",
+      });
+    }
 
     res.json(property);
   } catch (error) {
@@ -25,38 +27,51 @@ exports.getProperty = async (req, res) => {
   }
 };
 
-// ADD PROPERTY
-
-exports.addProperty = async (req, res) => {
+// CREATE
+const createProperty = async (req, res) => {
   try {
-    const uploadedImages = [];
+    const property = new Property(req.body);
 
-    if (req.files && req.files.length > 0) {
-      for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(file.path);
+    const savedProperty = await property.save();
 
-        uploadedImages.push(result.secure_url);
-      }
-    }
-
-    const property = new Property({
-      title: req.body.title,
-      location: req.body.location,
-      price: req.body.price,
-      images: uploadedImages,
-      beds: req.body.beds,
-      baths: req.body.baths,
-      area: req.body.area,
-      description: req.body.description,
-      sellerName: req.body.sellerName,
-      sellerPhone: req.body.sellerPhone,
-      seller: req.user.id,
-    });
-
-    await property.save();
-
-    res.status(201).json(property);
+    res.status(201).json(savedProperty);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// UPDATE
+const updateProperty = async (req, res) => {
+  try {
+    const updated = await Property.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// DELETE
+const deleteProperty = async (req, res) => {
+  try {
+    await Property.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Property deleted",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  getProperties,
+  createProperty,
+  getPropertyById,
+  updateProperty,
+  deleteProperty,
 };
