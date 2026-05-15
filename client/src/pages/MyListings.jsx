@@ -30,7 +30,7 @@ const MyListings = () => {
       try {
 
         const response =
-          await axios.get(
+          await API.get(
             "https://smart-estate-production.up.railway.app/api/properties"
           )
 

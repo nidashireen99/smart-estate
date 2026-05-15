@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
@@ -31,7 +31,7 @@ const Register = () => {
 
     try {
 
-      await axios.post(
+      await API.post(
 
         "https://smart-estate-production.up.railway.app/api/auth/register",
 

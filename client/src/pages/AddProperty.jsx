@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -48,7 +48,7 @@ const AddProperty = () => {
         data.append("images", images[i]);
       }
 
-      await axios.post(
+      await API.post(
         "https://smart-estate-production.up.railway.app/api/properties",
         data,
         {

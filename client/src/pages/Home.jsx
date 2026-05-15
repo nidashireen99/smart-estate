@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
 import Navbar from "../components/Navbar";
 import PropertyCard from "../components/PropertyCard";
@@ -18,7 +18,7 @@ const Home = () => {
 
       try {
 
-        const response = await axios.get(
+        const response = await API.get(
           "https://smart-estate-production.up.railway.app/api/properties"
         );
 

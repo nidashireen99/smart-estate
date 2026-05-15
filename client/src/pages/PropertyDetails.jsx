@@ -14,7 +14,7 @@ const PropertyDetails = () => {
 
       try {
 
-        const response = await axios.get(
+        const response = await API.get(
           `https://smart-estate-production.up.railway.app/api/properties/${id}`
         );
 
