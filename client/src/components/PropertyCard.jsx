@@ -1,8 +1,43 @@
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PropertyCard = ({ property }) => {
+
+  const addToFavorites = () => {
+
+    let favorites =
+      JSON.parse(localStorage.getItem("favorites")) || [];
+
+    // CHECK IF EXISTS
+    const alreadyExists = favorites.find(
+      (item) => item._id === property._id
+    );
+
+    if (alreadyExists) {
+      toast.error("Already in favorites ❤️");
+      return;
+    }
+
+    favorites.push(property);
+
+    localStorage.setItem(
+      "favorites",
+      JSON.stringify(favorites)
+    );
+
+    toast.success("Added to favorites ❤️");
+  };
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 relative">
+
+      {/* HEART */}
+      <button
+        onClick={addToFavorites}
+        className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md text-2xl"
+      >
+        ❤️
+      </button>
 
       {/* IMAGE */}
       <img
@@ -41,6 +76,7 @@ const PropertyCard = ({ property }) => {
             View Details
           </button>
         </Link>
+
       </div>
     </div>
   );
