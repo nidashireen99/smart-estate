@@ -1,21 +1,22 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../services/api";
+import axios from "axios";
 
 const AddProperty = () => {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     title: "",
     location: "",
     price: "",
-    image: "",
     beds: "",
     baths: "",
     area: "",
     description: "",
   });
 
+  const [images, setImages] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // HANDLE INPUT CHANGE
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -23,59 +24,91 @@ const AddProperty = () => {
     });
   };
 
+  // HANDLE IMAGE UPLOAD
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    setImages(files);
+
+    const imagePreviews = files.map((file) =>
+      URL.createObjectURL(file)
+    );
+
+    setPreviewImages(imagePreviews);
+  };
+
+  // HANDLE SUBMIT
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
+    try {
+      setLoading(true);
 
-    const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-    console.log("TOKEN:", token);
+      // TEMP IMAGE LINKS
+      // (later you can use Cloudinary)
+      const uploadedImages = previewImages;
 
-    const res = await API.post(
-      "/properties",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+      const propertyData = {
+        ...formData,
+        images: uploadedImages,
+        image: uploadedImages[0],
+      };
 
-    console.log(res.data);
+      const response = await axios.post(
+        "https://smart-estate-production.up.railway.app/api/properties",
+        propertyData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    alert("Property Added Successfully ✅");
+      console.log(response.data);
 
-    navigate("/");
+      alert("Property Added Successfully ✅");
 
-  } catch (error) {
+      setFormData({
+        title: "",
+        location: "",
+        price: "",
+        beds: "",
+        baths: "",
+        area: "",
+        description: "",
+      });
 
-    console.log(error.response);
+      setImages([]);
+      setPreviewImages([]);
+    } catch (error) {
+      console.log(error);
 
-    alert(
-      error.response?.data?.message ||
-      "Failed to add property"
-    );
-  }
-};
+      alert("Failed To Add Property ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl"
+        className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-3xl"
       >
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Add Property
+        <h1 className="text-4xl font-bold mb-8 text-center">
+          Add New Property
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <input
             type="text"
             name="title"
             placeholder="Property Title"
+            value={formData.title}
             onChange={handleChange}
-            className="border p-3 rounded"
+            className="border p-3 rounded-lg"
             required
           />
 
@@ -83,8 +116,9 @@ const AddProperty = () => {
             type="text"
             name="location"
             placeholder="Location"
+            value={formData.location}
             onChange={handleChange}
-            className="border p-3 rounded"
+            className="border p-3 rounded-lg"
             required
           />
 
@@ -92,57 +126,85 @@ const AddProperty = () => {
             type="number"
             name="price"
             placeholder="Price"
+            value={formData.price}
             onChange={handleChange}
-            className="border p-3 rounded"
+            className="border p-3 rounded-lg"
             required
-          />
-
-          <input
-            type="text"
-            name="image"
-            placeholder="Image URL"
-            onChange={handleChange}
-            className="border p-3 rounded"
           />
 
           <input
             type="number"
             name="beds"
             placeholder="Bedrooms"
+            value={formData.beds}
             onChange={handleChange}
-            className="border p-3 rounded"
+            className="border p-3 rounded-lg"
+            required
           />
 
           <input
             type="number"
             name="baths"
             placeholder="Bathrooms"
+            value={formData.baths}
             onChange={handleChange}
-            className="border p-3 rounded"
+            className="border p-3 rounded-lg"
+            required
           />
 
           <input
             type="text"
             name="area"
             placeholder="Area in sqft"
+            value={formData.area}
             onChange={handleChange}
-            className="border p-3 rounded"
+            className="border p-3 rounded-lg"
+            required
           />
         </div>
 
         <textarea
           name="description"
-          placeholder="Description"
+          placeholder="Property Description"
+          value={formData.description}
           onChange={handleChange}
-          className="border p-3 rounded w-full mt-4"
           rows="4"
-        ></textarea>
+          className="border p-3 rounded-lg w-full mt-5"
+        />
+
+        {/* MULTIPLE IMAGE UPLOAD */}
+        <div className="mt-6">
+          <label className="font-semibold block mb-2">
+            Upload Property Images
+          </label>
+
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full"
+          />
+        </div>
+
+        {/* IMAGE PREVIEW */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          {previewImages.map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              alt="preview"
+              className="h-32 w-full object-cover rounded-xl shadow"
+            />
+          ))}
+        </div>
 
         <button
           type="submit"
-          className="bg-orange-500 text-white px-6 py-3 rounded mt-6 w-full"
+          disabled={loading}
+          className="bg-black text-white w-full py-4 rounded-xl mt-8 hover:bg-gray-800 transition"
         >
-          Add Property
+          {loading ? "Adding Property..." : "Add Property"}
         </button>
       </form>
     </div>
